@@ -14,9 +14,7 @@ export class Controller {
         this.mainSection = document.querySelector('.main');
         this.newTodoInput = document.querySelector('.new-todo');
         this.todoList = document.querySelector('.todo-list');
-        this.btnClearCompleted = document.querySelector('.clear-completed');
         this.btnFilterAll = document.querySelector('.filter-all');
-        this.btnFilterActive = document.querySelector('.filter-active');
         this.btnFilterCompleted = document.querySelector('.filter-completed');
         this.itemLeft = document.querySelector('.todo-count');
     }
@@ -28,15 +26,12 @@ export class Controller {
                     content: this.newTodoInput.value
                 });
 
-                this.store.addTodo(todo);
                 this.addTodo(todo);
                 this.newTodoInput.value = '';
             }
         });
 
-        this.btnClearCompleted.addEventListener('click', () => this.clearAllCompleted());
         this.btnFilterAll.addEventListener('click', (e) => this.filterTodo(e.target, 'all'));
-        this.btnFilterActive.addEventListener('click', (e) => this.filterTodo(e.target, 'active'));
         this.btnFilterCompleted.addEventListener('click', (e) => this.filterTodo(e.target, 'completed'));
     }
 
@@ -48,45 +43,47 @@ export class Controller {
 
     refreshCounterAndList() {
         const todos = this.store.getAllTodos();
-        let itemsUnchecked = 0;
 
-        todos.forEach(t => {
-            if (!t.checked) {
-                itemsUnchecked++;
-            }
-        });
+       this.mainSection.style.display = todos.length > 0 ? 'block' : 'none';
+       this.itemLeft.innerText = todos.length + ' question' + (todos.length > 1 ? 's' : '') + ' posé' + (todos.length > 1 ? 'es' : '');
 
-        this.mainSection.style.display = todos.length > 0 ? 'block' : 'none';
-        this.itemLeft.innerText = itemsUnchecked + ' item' + (itemsUnchecked < 0 ? 's' : '') + ' left';
+
+
     }
 
     addTodo(todo) {
-        let li = document.createElement('li');
-        li.setAttribute('data-id', todo.id);
+      if (/\S/.test(todo.content))
+      {
+          let li = document.createElement('li');
+          li.setAttribute('data-id', todo.id);
 
-        let input = document.createElement('input');
-        input.type = 'checkbox';
-        input.classList.add('toggle');
-        input.addEventListener('click', () => this.toggleTodo(todo.id));
+          let input = document.createElement('input');
+          input.type = 'checkbox';
+          input.classList.add('toggle');
+          input.addEventListener('click', () => this.toggleTodo(todo.id));
 
-        if (todo.checked) {
-            input.setAttribute('checked', 'checked');
-            li.classList.add('completed');
-        }
+          if (todo.checked) {
+              input.setAttribute('checked', 'checked');
+              li.classList.add('completed');
+          }
 
-        let label = document.createElement('label');
-        label.innerText = todo.content;
-        label.addEventListener('dblclick', () => this.editTodo(todo));
+          let label = document.createElement('label');
+          label.innerText = todo.content;
+          label.addEventListener('dblclick', () => this.editTodo(todo));
 
-        let button = document.createElement('button');
-        button.classList.add('destroy');
-        button.addEventListener('click', () => this.removeTodo(todo.id));
+          let button = document.createElement('button');
+          button.classList.add('destroy');
+          button.addEventListener('click', () => this.removeTodo(todo.id));
 
-        li.appendChild(input);
-        li.appendChild(label);
-        li.appendChild(button);
+          //li.appendChild(input);
+          li.appendChild(label);
+          li.appendChild(input);
+          li.appendChild(input);
+          //li.appendChild(button);
 
-        this.todoList.appendChild(li);
+          this.todoList.appendChild(li);
+          this.store.addTodo(todo);
+      }
     }
 
     filterTodo(element, filter) {
@@ -104,6 +101,7 @@ export class Controller {
                 break;
 
             case 'active':
+              //this case is dead code
                 this.todoList.querySelectorAll("li").forEach(el => {
                     if (el.classList.contains('completed')) {
                         el.style.display = 'none'
@@ -163,21 +161,19 @@ export class Controller {
         let li = this.todoList.querySelector("li[data-id='" + id + "']");
         li.classList.remove('editing');
         li.querySelector('.edit').remove();
-        li.querySelector('label').innerText = newContent;
 
-        this.store.editTodo(id, newContent);
+        if (/\S/.test(newContent)){
+          li.querySelector('label').innerText = newContent;
+          this.store.editTodo(id, newContent);
+        }
+        else {
+          this.removeTodo(id);
+        }
+
     }
 
     removeTodo(id) {
         this.todoList.querySelector("li[data-id='" + id + "']").remove();
         this.store.removeTodo(id);
-    }
-
-    clearAllCompleted() {
-        this.todoList.querySelectorAll("li.completed").forEach(el => {
-           el.remove();
-        });
-
-        this.store.clearAllCompleted();
     }
 }
