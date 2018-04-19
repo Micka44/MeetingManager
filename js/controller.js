@@ -26,7 +26,13 @@ export class Controller {
                     content: this.newTodoInput.value
                 });
 
+                if (/\S/.test(todo.content))
+                {
+
                 this.addTodo(todo);
+                this.store.addTodo(todo);
+                this.filterTodo(this.btnFilterAll, 'all');
+                }
                 this.newTodoInput.value = '';
             }
         });
@@ -52,8 +58,7 @@ export class Controller {
     }
 
     addTodo(todo) {
-      if (/\S/.test(todo.content))
-      {
+
           let li = document.createElement('li');
           li.setAttribute('data-id', todo.id);
 
@@ -82,8 +87,6 @@ export class Controller {
           //li.appendChild(button);
 
           this.todoList.appendChild(li);
-          this.store.addTodo(todo);
-      }
     }
 
     filterTodo(element, filter) {
