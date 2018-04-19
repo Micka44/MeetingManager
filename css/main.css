@@ -166,6 +166,18 @@ label[for='toggle-all'] {
     display: none;
 }
 
+.todo-list li img{
+  height: 30px;
+  text-align: center;
+  /* auto, since non-WebKit browsers doesn't support input styling */
+  position: absolute;
+  top: 5px;
+  bottom: 0;
+  right: 15px;
+  margin: auto 0;
+  border: none;
+}
+
 .todo-list li.editing .edit {
     display: block;
     width: 506px;

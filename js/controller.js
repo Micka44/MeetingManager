@@ -62,13 +62,17 @@ export class Controller {
           let li = document.createElement('li');
           li.setAttribute('data-id', todo.id);
 
-          let input = document.createElement('input');
-          input.type = 'checkbox';
-          input.classList.add('toggle');
+          // let input = document.createElement('input');
+          // input.type = 'checkbox';
+          // input.classList.add('toggle');
+          // input.addEventListener('click', () => this.toggleTodo(todo.id));
+
+          let input = document.createElement("img");
+          input.src = "img/thumbs-up-unselected.svg";
           input.addEventListener('click', () => this.toggleTodo(todo.id));
 
           if (todo.checked) {
-              input.setAttribute('checked', 'checked');
+              input.src = "img/thumbs-up-selected.svg";
               li.classList.add('completed');
           }
 
@@ -133,11 +137,21 @@ export class Controller {
 
     toggleTodo(id) {
         let li = this.todoList.querySelector("li[data-id='" + id + "']");
+        let img = this.todoList.querySelector("li[data-id='" + id + "'] img");
         let isChecked = this.store.toggleTodo(id);
 
+        // if (isChecked) {
+        //     li.classList.add('completed');
+        // } else {
+        //     li.classList.remove('completed');
+        // }
         if (isChecked) {
+          console.log('check');
+            img.src = "img/thumbs-up-selected.svg";
             li.classList.add('completed');
         } else {
+          console.log('uncheck');
+            img.src = "img/thumbs-up-unselected.svg";
             li.classList.remove('completed');
         }
     }
