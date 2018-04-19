@@ -17,6 +17,7 @@ export class Controller {
         this.btnFilterAll = document.querySelector('.filter-all');
         this.btnFilterCompleted = document.querySelector('.filter-completed');
         this.itemLeft = document.querySelector('.todo-count');
+        this.likesLeft = document.querySelector('.todo-likes');
     }
 
     addListenners() {
@@ -52,9 +53,13 @@ export class Controller {
 
        this.mainSection.style.display = todos.length > 0 ? 'block' : 'none';
        this.itemLeft.innerText = todos.length + ' question' + (todos.length > 1 ? 's' : '') + ' posé' + (todos.length > 1 ? 'es' : '');
+      this.refreshNumberOfLike();
+}
 
-
-
+    refreshNumberOfLike(){
+      let li_selected = this.todoList.querySelectorAll(".todo-list .completed");
+      let count = 5 - li_selected.length;
+      this.likesLeft.innerText = count + " like"+(count >1 ? 's' : '')+ " restant"+(count >1 ? 's' : '');
     }
 
     addTodo(todo) {
@@ -136,15 +141,13 @@ export class Controller {
     }
 
     toggleTodo(id) {
+      let nb_selected = this.todoList.querySelectorAll(".todo-list .completed").length;
+
+      if (nb_selected <5 || this.store.isChecked(id)){
         let li = this.todoList.querySelector("li[data-id='" + id + "']");
         let img = this.todoList.querySelector("li[data-id='" + id + "'] img");
         let isChecked = this.store.toggleTodo(id);
 
-        // if (isChecked) {
-        //     li.classList.add('completed');
-        // } else {
-        //     li.classList.remove('completed');
-        // }
         if (isChecked) {
           console.log('check');
             img.src = "img/thumbs-up-selected.svg";
@@ -154,6 +157,8 @@ export class Controller {
             img.src = "img/thumbs-up-unselected.svg";
             li.classList.remove('completed');
         }
+        this.refreshNumberOfLike();
+      }
     }
 
     editTodo(todo) {

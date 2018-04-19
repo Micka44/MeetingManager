@@ -34,6 +34,18 @@ export class Store {
         this.refreshStorage();
     }
 
+    isChecked(id){
+        let isChecked = false;
+
+        this.todoList.forEach(t => {
+           if (t.id === id) {
+               isChecked = t.checked;
+           }
+        });
+        return isChecked;
+
+    }
+
     toggleTodo(id) {
         let isChecked = false;
 
